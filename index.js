@@ -71,6 +71,15 @@ async function run() {
         res.send(result);
       })
 
+
+       //api all review   
+       app.get('/review', async(req,res)=>{
+        const query={}
+        const manufacture=reviewCollection.find(query)
+        const result= await manufacture.toArray();
+        res.send(result);
+    })
+
       
     } finally {
       
