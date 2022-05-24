@@ -27,6 +27,8 @@ async function run() {
     try {
       await client.connect();
       const manufactureCollection = client.db("assignment12").collection("manufacture");
+     
+      const  orderCollection=client.db('assignment12').collection('order');
 
       //api all products    
       app.get('/manufacture', async(req,res)=>{
@@ -47,6 +49,16 @@ async function run() {
         res.send(result);
 
     });
+
+
+    //----------------order insert item--------------------
+
+        
+    app.post('/order', async(req,res)=>{
+        const newItem=req.body;
+        const result = await orderCollection.insertOne(newItem);
+        res.send(result);
+      })
 
       
     } finally {
