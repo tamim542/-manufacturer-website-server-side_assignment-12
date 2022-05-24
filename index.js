@@ -2,7 +2,7 @@ const express=require('express')
 const app= express()
 require('dotenv').config()
 var cors=require('cors')
-
+const ObjectId = require("mongodb").ObjectId;
 const { MongoClient, ServerApiVersion } = require('mongodb');
 
 
@@ -35,6 +35,19 @@ async function run() {
         const result= await manufacture.toArray();
         res.send(result);
     })
+
+
+    //---------purchase/:id-----------
+
+    app.get('/product/:id', async (req, res) => {
+        const id = req.params.id;
+        console.log(id);
+        const query = { _id: ObjectId(id) };
+        const result = await manufactureCollection.findOne(query);
+        res.send(result);
+
+    });
+
       
     } finally {
       
