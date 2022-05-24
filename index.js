@@ -80,6 +80,23 @@ async function run() {
         res.send(result);
     })
 
+
+     // my order Collection API----------
+
+     app.get('/myorder', async (req, res) => {
+        
+        const email = req.query.email;
+      
+            const query = {email:email};
+            const cursor = orderCollection.find(query);
+            const items = await cursor.toArray();
+            res.send(items);
+
+         
+        
+    })
+        
+
       
     } finally {
       
