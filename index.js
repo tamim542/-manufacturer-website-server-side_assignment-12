@@ -135,6 +135,27 @@ async function run() {
     })
 
 
+    // update user information
+    app.put('/user/:id', async(req, res) =>{
+        const id = req.params.id;
+        const updatedUser = req.body;
+        const filter = {_id: ObjectId(id)};
+        const options = { upsert: true };
+        const updatedDoc = {
+            $set: {
+                email: updatedUser.email,
+                name: updatedUser.name,
+                address: updatedUser.address,
+                phoneno: updatedUser.phoneno,
+                profilelink: updatedUser.profilelink
+            }
+        };
+        const result = await userInfoCollection.updateOne(filter, updatedDoc, options);
+        res.send(result);
+
+    })
+
+
       
     } finally {
       
