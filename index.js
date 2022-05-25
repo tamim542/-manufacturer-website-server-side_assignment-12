@@ -118,6 +118,23 @@ async function run() {
       })
 
 
+
+       // my profile info Collection API----------
+
+       app.get('/myprofileinfo', async (req, res) => {
+        
+        const email = req.query.email;
+      
+            const query = {email:email};
+            const cursor = userInfoCollection.find(query);
+            const items = await cursor.toArray();
+            res.send(items);
+
+         
+        
+    })
+
+
       
     } finally {
       
