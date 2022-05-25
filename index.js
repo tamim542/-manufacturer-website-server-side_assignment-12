@@ -156,6 +156,14 @@ async function run() {
     })
 
 
+     ///------------count toatal product--------------
+
+     app.get('/productsCount', async(req,res)=>{
+        
+
+        const count = await manufactureCollection.estimatedDocumentCount();
+        res.send({count});
+     })
       
     } finally {
       
