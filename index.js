@@ -30,6 +30,7 @@ async function run() {
      
       const  orderCollection=client.db('assignment12').collection('order');
       const  reviewCollection=client.db('assignment12').collection('review');
+      const  userInfoCollection=client.db('assignment12').collection('information');
 
       //api all products    
       app.get('/manufacture', async(req,res)=>{
@@ -105,6 +106,17 @@ async function run() {
         res.send(result);
     });
         
+
+
+    //----------------my profile user info add--------------------
+
+        
+    app.post('/userinfo', async(req,res)=>{
+        const newItem=req.body;
+        const result = await userInfoCollection.insertOne(newItem);
+        res.send(result);
+      })
+
 
       
     } finally {
