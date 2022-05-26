@@ -2,6 +2,7 @@ const express=require('express')
 const app= express()
 require('dotenv').config()
 var cors=require('cors')
+const jwt = require('jsonwebtoken');
 const ObjectId = require("mongodb").ObjectId;
 const { MongoClient, ServerApiVersion } = require('mongodb');
 
@@ -31,6 +32,21 @@ async function run() {
       const  orderCollection=client.db('assignment12').collection('order');
       const  reviewCollection=client.db('assignment12').collection('review');
       const  userInfoCollection=client.db('assignment12').collection('information');
+
+
+
+         // AUTH------------------------------------
+         app.post('/login', async (req, res) => {
+            const user = req.body;
+            const accessToken = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, {
+                expiresIn: '1d'
+            });
+            res.send({ accessToken });
+        })
+
+
+        //---------------------------------------------
+
 
       //api all products    
       app.get('/manufacture', async(req,res)=>{
@@ -119,7 +135,7 @@ async function run() {
 
 
 
-       // my profile info Collection API----------
+       // my profile info Collection API-----------
 
        app.get('/myprofileinfo', async (req, res) => {
         
