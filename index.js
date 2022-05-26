@@ -32,6 +32,7 @@ async function run() {
       const  orderCollection=client.db('assignment12').collection('order');
       const  reviewCollection=client.db('assignment12').collection('review');
       const  userInfoCollection=client.db('assignment12').collection('information');
+      const  userCollection=client.db('assignment12').collection('user');
 
 
 
@@ -152,7 +153,7 @@ async function run() {
 
 
     // update user information
-    app.put('/user/:id', async(req, res) =>{
+    app.put('/updateuserinfo/:id', async(req, res) =>{
         const id = req.params.id;
         const updatedUser = req.body;
         const filter = {_id: ObjectId(id)};
@@ -180,6 +181,26 @@ async function run() {
         const count = await manufactureCollection.estimatedDocumentCount();
         res.send({count});
      })
+
+
+     //--------------new user create --------------
+
+     app.put('/user/:email',async(req,res)=>{
+
+        const email = req.query.email;
+        const user=req.body;
+        const filter = {email:email};
+        const options = { upsert: true };
+        const updateDoc = {
+            $set:user,
+        }
+        const result = await userCollection.updateOne(filter, updateDoc, options);
+        const token = jwt.sign({ email: email }, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '1h' })
+        res.send({ result, token });
+     })
+
+
+
       
     } finally {
       
