@@ -269,7 +269,46 @@ async function run() {
         const result = await orderCollection.deleteOne(query);
         res.send(result);
     });
+
+
+
+     //------------- Delete tools by admin---------------
+     app.delete('/deletetools/:id', async(req, res) =>{
+        const id = req.params.id;
+        const query = {_id: ObjectId(id)};
+        const result = await manufactureCollection.deleteOne(query);
+        res.send(result);
+    });
         
+    //make admin for user and user get
+//verifyJWT
+    app.get('/user', async (req, res) => {
+        const users = await userCollection.find().toArray();
+        res.send(users);
+      });
+
+
+        //make admin delete admin
+//verifyJWT
+        app.put('/adminuser/admin/:email', async (req, res) => {
+            const email = req.params.email;
+            //const requester = req.decoded.email;
+          //  const requesterAccount = await userCollection.findOne({ email: requester });
+           // if (requesterAccount.role === 'admin') {
+              const filter = { email: email };
+              const updateDoc = {
+                $set: { role: 'admin' },
+              };
+              const result = await userCollection.updateOne(filter, updateDoc);
+              res.send(result);
+            // }
+            // else{
+            //   res.status(403).send({message: 'forbidden'});
+            // }
+      
+          })
+
+
 
       
     } finally {
