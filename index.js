@@ -280,6 +280,18 @@ async function run() {
         res.send(result);
     });
         
+
+    // admin route do not visit any user
+          
+    app.get('/admin/:email', async(req, res) =>{
+        const email = req.params.email;
+        const user = await userCollection.findOne({email: email});
+        const isAdmin = user.role === 'admin';
+        res.send({admin: isAdmin})
+      })
+
+
+
     //make admin for user and user get
 //verifyJWT
     app.get('/user', verifyJWT, async (req, res) => {
@@ -303,7 +315,7 @@ async function run() {
 
                 const result = await userCollection.updateOne(filter, updateDoc);
                 res.send(result);
-                
+
             }else{
                 res.status(403).send({message: 'forbidden'});
               }
