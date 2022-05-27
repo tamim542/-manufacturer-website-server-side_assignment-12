@@ -282,7 +282,7 @@ async function run() {
         
     //make admin for user and user get
 //verifyJWT
-    app.get('/user', async (req, res) => {
+    app.get('/user', verifyJWT, async (req, res) => {
         const users = await userCollection.find().toArray();
         res.send(users);
       });
@@ -290,21 +290,26 @@ async function run() {
 
         //make admin delete admin
 //verifyJWT
-        app.put('/adminuser/admin/:email', async (req, res) => {
+        app.put('/adminuser/admin/:email', verifyJWT, async (req, res) => {
             const email = req.params.email;
-            //const requester = req.decoded.email;
-          //  const requesterAccount = await userCollection.findOne({ email: requester });
-           // if (requesterAccount.role === 'admin') {
-              const filter = { email: email };
-              const updateDoc = {
-                $set: { role: 'admin' },
-              };
-              const result = await userCollection.updateOne(filter, updateDoc);
-              res.send(result);
-            // }
-            // else{
-            //   res.status(403).send({message: 'forbidden'});
-            // }
+            const requester = req.decoded.email;
+            const requesterAccount = await userCollection.findOne({ email: requester });
+            if (requesterAccount.role === 'admin'){
+
+                const filter = { email: email };
+                const updateDoc = {
+                  $set: { role: 'admin' },
+                };
+
+                const result = await userCollection.updateOne(filter, updateDoc);
+                res.send(result);
+                
+            }else{
+                res.status(403).send({message: 'forbidden'});
+              }
+             
+            
+            
       
           })
 
