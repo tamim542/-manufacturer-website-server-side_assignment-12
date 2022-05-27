@@ -6,6 +6,10 @@ const jwt = require('jsonwebtoken');
 const ObjectId = require("mongodb").ObjectId;
 const { MongoClient, ServerApiVersion } = require('mongodb');
 
+//-------------payment stripe------------------
+const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
+
+
 ///////////////////nodemailer and mailgun
 
 //const nodemailer = require('nodemailer');
@@ -67,6 +71,7 @@ async function run() {
       const  reviewCollection=client.db('assignment12').collection('review');
       const  userInfoCollection=client.db('assignment12').collection('information');
       const  userCollection=client.db('assignment12').collection('user');
+      const paymentCollection = client.db('doctors_portal').collection('payments');
 
 
 
@@ -322,7 +327,37 @@ async function run() {
       
 
 
+          //payment method----------------------------
 
+          app.post('/create-payment-intent', verifyJWT, async(req, res) =>{
+            const service = req.body;
+            const price = service.price;
+            const amount = price*100;
+            const paymentIntent = await stripe.paymentIntents.create({
+              amount : amount,
+              currency: 'usd',
+              payment_method_types:['card']
+            });
+            res.send({clientSecret: paymentIntent.client_secret})
+          });
+
+
+          //------------------------------order payment--------------------
+        //   app.patch('/orderpay/:id', verifyJWT, async(req, res) =>{
+        //     const id  = req.params.id;
+        //     const payment1 = req.body;
+        //     const filter = {_id: ObjectId(id)};
+        //     const updatedDoc = {
+        //       $set: {
+        //         paid: true,
+        //         transactionId: payment1.transactionId
+        //       }
+        //     }
+      
+        //     const result = await paymentCollection.insertOne(payment1);
+        //     const updatedOrder = await orderCollection.updateOne(filter, updatedDoc);
+        //     res.send(updatedOrder);
+        //   })
       
     } finally {
       
