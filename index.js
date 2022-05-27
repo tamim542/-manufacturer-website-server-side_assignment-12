@@ -6,7 +6,11 @@ const jwt = require('jsonwebtoken');
 const ObjectId = require("mongodb").ObjectId;
 const { MongoClient, ServerApiVersion } = require('mongodb');
 
+///////////////////nodemailer and mailgun
 
+//const nodemailer = require('nodemailer');
+
+//const mg = require("nodemailer-mailgun-transport");
 
 app.use(cors())
 app.use(express.json())
@@ -35,11 +39,11 @@ const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology:
           return res.status(401).send({ message: 'UnAuthorized access' });
         }
         const token = authHeader.split(' ')[1];
-        console.log(token);
-        jwt.verify(token, '8c3bad33d6be0e0fa5c4c6868f959322cc41dd5ff3733c6dfebaba89d71ca7870c5a901cfb1eadbcd9a5fec35806631999cc7ae57e1ead14b2991a4db44f4e63', function (err, decoded) {
+       // console.log(token);
+        jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, function (err, decoded) {
         
             if (err) {
-              console.log(err);
+             // console.log(err);
             return res.status(403).send({ message: 'Forbidden access' })
           }
           req.decoded = decoded;
@@ -47,6 +51,8 @@ const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology:
           next();
         });
       }
+
+
 
 
 
@@ -64,28 +70,7 @@ async function run() {
 
 
 
-        // auth------------------------------------
-        //  app.post('/login', async (req, res) => {
-        //     const user = req.body;
-            
-        //     const accessToken = jwt.sign(user, '8c3bad33d6be0e0fa5c4c6868f959322cc41dd5ff3733c6dfebaba89d71ca7870c5a901cfb1eadbcd9a5fec35806631999cc7ae57e1ead14b2991a4db44f4e63', {
-        //         expiresIn: '1d'
-        //     });
-        //     res.send({ accessToken });
-        // })
-
-     // auth------------------------------------
-        //  app.post('/login',async(req,res)=>{
-        //     const user=req.body;
-        //     const accessToken = jwt.sign(user, '8c3bad33d6be0e0fa5c4c6868f959322cc41dd5ff3733c6dfebaba89d71ca7870c5a901cfb1eadbcd9a5fec35806631999cc7ae57e1ead14b2991a4db44f4e63', {
-        //         expiresIn: '1d'
-        //     });
-        //     res.send({ accessToken });
-        // })
-
-        //---------------------------------------------
-
-
+       
       //api all products    
       app.get('/manufacture', async(req,res)=>{
         const query={}
@@ -142,7 +127,7 @@ async function run() {
         
         const email = req.query.email;
         const decodedEmail = req.decoded.email;
-        console.log('email=',email,'decodedEmail=',decodedEmail,'req.decodedEmai=',req.decodedEmail);
+      //  console.log('email=',email,'decodedEmail=',decodedEmail,'req.decodedEmai=',req.decodedEmail);
           
             if (email === decodedEmail) {
                 const query = {email:email};
@@ -232,9 +217,9 @@ async function run() {
         
 
         const email = req.params.email;
-        console.log('user/',email);
+       // console.log('user/',email);
         const user=req.body;
-        console.log(user);
+       // console.log(user);
         const filter = {email:email};
         const options = { upsert: true };
         const updateDoc = {
@@ -326,6 +311,17 @@ async function run() {
           })
 
 
+          //payment method get order by id----------
+
+          app.get('/productorder/:id', verifyJWT, async(req, res) =>{
+            const id = req.params.id;
+            const query = {_id: ObjectId(id)};
+            const booking = await orderCollection.findOne(query);
+            res.send(booking);
+          })
+      
+
+
 
       
     } finally {
@@ -333,14 +329,6 @@ async function run() {
     }
   }
   run()
-
-
-
-
-
-
-
-
 
 
 
