@@ -342,7 +342,7 @@ async function run() {
           });
 
 
-          //------------------------------order payment--------------------
+          //------------------------------order payment-------------------
         //   app.patch('/orderpay/:id', verifyJWT, async(req, res) =>{
         //     const id  = req.params.id;
         //     const payment1 = req.body;
